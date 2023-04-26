@@ -1,9 +1,16 @@
 const express = require('express');
+const connection = require('./connection-db')
 const app = express()
 
 
 app.get('/', (req,res) =>{
-    res.send('Funciona')
+    connection.query('SELECT * FROM users', (error,results,fields) =>{
+        if(error){
+            res.send('Ha fallado la consulta :(')
+        }else{
+            res.send(results)
+        }
+    })
 })
 
 app.listen(3000,() =>{

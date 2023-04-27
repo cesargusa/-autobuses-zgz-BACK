@@ -1,17 +1,13 @@
 const express = require('express');
-const connection = require('./connection-db')
+const userRoute = require('.//routes/userRoutes')
 const app = express()
+const cors = require('cors');
 
 
-app.get('/', (req,res) =>{
-    connection.query('SELECT * FROM users', (error,results,fields) =>{
-        if(error){
-            res.send('Ha fallado la consulta :(')
-        }else{
-            res.send(results)
-        }
-    })
-})
+app.use(express.json());
+app.use(cors())
+//Middelware, path inicial
+app.use('/api/Users', userRoute);
 
 app.listen(3000,() =>{
     console.log("Funciona en el puerto 3000")

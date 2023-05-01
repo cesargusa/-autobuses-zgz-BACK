@@ -47,3 +47,36 @@ exports.DeleteUser = (req,res) =>{
         else res.send(`Usuario con id: ${idUser} eliminado correctamente`)
     })
 }
+
+//UPDATE CONNECTION
+
+exports.UpdateUser = (req, res) => {
+    const idUser = req.params.idUser
+    const lastConnection = req.body.LastConnection
+    const sql = 'UPDATE Users SET LastConnection = ? WHERE IdUser = ?'
+    connection.query(sql, [lastConnection, idUser], (err, result) =>{
+        if(err) throw err
+        if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
+        else res.json({message:`Usuario ${idUser} actualziado correctamente`})
+    })
+}
+
+
+
+//Iniciar Sesion
+
+exports.Login = (req,res) =>{
+    const {email,password} = req.body
+    const sql = 'SELECT * from Users WHERE Email = ? AND Password = ?'
+    connection.query(sql,[email,password], (error,results,fields) =>{
+        if(error) throw error
+        if(results.length > 0){
+            console.log(results)
+            const userName = results[0].UserName
+            const idUser = results[0].IdUser
+            res.json({succes:true, userName, idUser})
+        }else{
+            res.json({succes:false})
+        }
+    })
+}

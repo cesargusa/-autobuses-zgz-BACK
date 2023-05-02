@@ -3,7 +3,7 @@ const connection = require('../connection-db')
 
 //GET
 exports.GetUsers = (req, res) => {
-    connection.query('SELECT * FROM users', (error, results, fields) => {
+    connection.query('SELECT * FROM Users', (error, results, fields) => {
         if (error) {
             res.send('Ha fallado la consulta :(')
         } else {

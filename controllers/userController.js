@@ -19,6 +19,7 @@ exports.CreateUser = (req, res) => {
     const sqlCheck = 'SELECT COUNT(*) as count FROM Users WHERE UserName = ? OR Email = ?'
     sql = 'INSERT INTO Users VALUES (?, ?, ?,?,?,?,?)'
     connection.query(sqlCheck, [req.body.UserName, req.body.Email], (err, result) => {
+        if (err) throw err
         if (result[0].count > 0) {
             res.status(400).send('El UserName o el Email ya existe');
 

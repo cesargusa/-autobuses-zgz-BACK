@@ -1,7 +1,7 @@
 const connection = require('../connection-db')
 
 
-//GET
+//GET ALL
 exports.GetUsers = (req, res) => {
     connection.query('SELECT * FROM Users', (error, results, fields) => {
         if (error) {
@@ -12,6 +12,23 @@ exports.GetUsers = (req, res) => {
     })
 }
 
+//GET BY ID
+exports.GetUserById = (req,res) =>{
+    const idUser = req.params
+    const sql = 'SELECT * FROM Users WHERE IdUser = ?'
+    connection.query(sql, [idUser],(err,results,fields) => {
+        if(err) {
+            console.error('Error al obtener usuario por ID: ' + err.stack);
+            res.status(500).send('Error interno del servidor');
+            return;
+        }
+       if(results.length === 0) {
+        res.status(404).send('Usuario no encontrado');
+        return
+       }
+       res.send(results[0])
+    })
+}
 
 //CREATE
 exports.CreateUser = (req, res) => {
@@ -35,6 +52,8 @@ exports.CreateUser = (req, res) => {
         })
     }
 }
+
+
 
 //DELETE
 

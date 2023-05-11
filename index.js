@@ -7,8 +7,12 @@ const cors = require('cors');
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://cesar.proyectosdwa.es'
+    origin: ['https://cesar.proyectosdwa.es', 'http://localhost:4200'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
   }));
+  
 //Middelware, path inicial
 app.use('/api/Users', userRoute);
 app.use('/api/LinesFavorites', linesFavoritesRoute);

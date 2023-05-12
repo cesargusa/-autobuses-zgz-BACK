@@ -12,7 +12,13 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200
   }));
-  
+  app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 //Middelware, path inicial
 app.use('/api/Users', userRoute);
 app.use('/api/LinesFavorites', linesFavoritesRoute);

@@ -9,8 +9,8 @@ var transporter = nodemailer.createTransport({
     secure: false, // TLS
     requireTLS: true,
     auth: {
-        user: 'cesargusa-97@hotmail.com',
-        pass: 'Ce$ar1997'
+        user: 'autobuseszaragoza@hotmail.com',
+        pass: 'PruebaBot'
       },
       tls: {
         ciphers: 'SSLv3'

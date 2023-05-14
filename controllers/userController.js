@@ -45,7 +45,7 @@ exports.CreateUser = (req, res) => {
             QueryInsert()
             var mensaje = `Enhorabuen, se ha registrado correctamente el usuario ${UserName}`
             var mailOptions = {
-                from: 'cesargusa-97@hotmail.com',
+                from: 'autobuseszaragoza@hotmail.com',
                 to: Email,
                 subject: 'Autobuses Zaragoza Cuenta Creada',
                 text: mensaje

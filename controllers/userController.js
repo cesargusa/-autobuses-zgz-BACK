@@ -1,5 +1,6 @@
+// const mail = require('nodemailer/lib/mailer')
 const connection = require('../connection-db')
-
+const mail = require('../mail/mail')
 
 //GET ALL
 exports.GetUsers = (req, res) => {
@@ -40,7 +41,18 @@ exports.CreateUser = (req, res) => {
         if (result[0].count > 0) {
             res.status(400).send('El UserName o el Email ya existe');
 
-        } else QueryInsert()
+        } else {
+            QueryInsert()
+            var mensaje = `Enhorabuen, se ha registrado correctamente el usuario ${UserName}`
+            var mailOptions = {
+                from: 'cesargusa-97@hotmail.com',
+                to: Email,
+                subject: 'Autobuses Zaragoza Cuenta Creada',
+                text: mensaje
+              };
+            mail(mailOptions)
+            console.log(mailOptions)
+        }
     }
     )
     function QueryInsert() {
@@ -107,11 +119,13 @@ exports.DeleteUserIsActive = (req,res) =>{
 //Iniciar Sesion
 
 exports.Login = (req,res) =>{
+
     const {email,password} = req.body
     const sql = 'SELECT * FROM Users WHERE (Email = ? OR UserName = ?) AND Password = ? AND isActive = true'
     connection.query(sql,[email,email,password], (error,results,fields) =>{
         if(error) throw error
         if(results.length > 0){
+        
             console.log(results)
             const userName = results[0].UserName
             const idUser = results[0].IdUser

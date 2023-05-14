@@ -8,10 +8,12 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors({
     origin: ['https://cesar.proyectosdwa.es', 'http://localhost:4200'],
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST','PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200
   }));
+
+  //Headers que se devuevlven en todas las solicitudes
   app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

@@ -14,7 +14,7 @@ exports.GetUsers = (req, res) => {
 
 //GET BY ID
 exports.GetUserById = (req,res) =>{
-    const idUser = req.params
+    const idUser = req.params.idUser
     const sql = 'SELECT * FROM Users WHERE IdUser = ?'
     connection.query(sql, [idUser],(err,results,fields) => {
         if(err) {
@@ -53,7 +53,16 @@ exports.CreateUser = (req, res) => {
     }
 }
 
-
+exports.UpdatePasswordUser = (req,res) => {
+    const idUser = req.params.idUser
+    const password = req.body.Password
+    const sql = 'UPDATE Users SET Password = ? WHERE IdUser = ?'
+    connection.query(sql, [password, idUser], (err, result) =>{
+        if(err) throw err
+        if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
+        else res.json({message:`Contraseña de Usuario ${idUser} actualizada correctamente`})
+    })
+}
 
 //DELETE
 
@@ -81,14 +90,26 @@ exports.UpdateUser = (req, res) => {
     })
 }
 
+//DELETE USER IsActive
+
+exports.DeleteUserIsActive = (req,res) =>{
+    const idUser = req.params.idUser
+    const isActive = req.body.IsActive
+    const sql = 'UPDATE Users SET IsActive = ? WHERE IdUser = ?'
+    connection.query(sql, [isActive, idUser], (err, result) =>{
+        if(err) throw err
+        if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
+        else res.json({message:`Usuario ${idUser} ha sido eliminado correctamente`})
+    })
+}
 
 
 //Iniciar Sesion
 
 exports.Login = (req,res) =>{
     const {email,password} = req.body
-    const sql = 'SELECT * from Users WHERE Email = ? AND Password = ?'
-    connection.query(sql,[email,password], (error,results,fields) =>{
+    const sql = 'SELECT * FROM Users WHERE (Email = ? OR UserName = ?) AND Password = ? AND isActive = true'
+    connection.query(sql,[email,email,password], (error,results,fields) =>{
         if(error) throw error
         if(results.length > 0){
             console.log(results)

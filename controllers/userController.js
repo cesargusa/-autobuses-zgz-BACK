@@ -1,10 +1,12 @@
 // const mail = require('nodemailer/lib/mailer')
 const connection = require('../connection-db')
 const mail = require('../mail/mail')
+const sitioEnviroment = require('../enviroments/enviroments.js')
+
 
 //GET ALL
 exports.GetUsers = (req, res) => {
-    connection.query('SELECT * FROM Users', (error, results, fields) => {
+    connection.query('SELECT * FROM users', (error, results, fields) => {
         if (error) {
             res.send('Ha fallado la consulta :(')
         } else {
@@ -16,7 +18,7 @@ exports.GetUsers = (req, res) => {
 //GET BY ID
 exports.GetUserById = (req,res) =>{
     const idUser = req.params.idUser
-    const sql = 'SELECT * FROM Users WHERE IdUser = ?'
+    const sql = 'SELECT * FROM users WHERE IdUser = ?'
     connection.query(sql, [idUser],(err,results,fields) => {
         if(err) {
             console.error('Error al obtener usuario por ID: ' + err.stack);
@@ -34,24 +36,33 @@ exports.GetUserById = (req,res) =>{
 //CREATE
 exports.CreateUser = (req, res) => {
     const { idUser, Email, UserName, Password, CreateDate, LastConnection, IsActive } = req.body;
-    const sqlCheck = 'SELECT COUNT(*) as count FROM Users WHERE UserName = ? OR Email = ?'
-    sql = 'INSERT INTO Users VALUES (?, ?, ?,?,?,?,?)'
+    const sqlCheck = 'SELECT COUNT(*) as count FROM users WHERE UserName = ? OR Email = ?'
+    sql = 'INSERT INTO users VALUES (?, ?, ?,?,?,?,?)'
     connection.query(sqlCheck, [req.body.UserName, req.body.Email], (err, result) => {
         if (err) throw err
         if (result[0].count > 0) {
             res.status(400).send('El UserName o el Email ya existe');
-
         } else {
             QueryInsert()
-            var mensaje = `Enhorabuen, se ha registrado correctamente el usuario ${UserName}`
-            var mailOptions = {
-                from: 'autobuseszaragoza@hotmail.com',
+            var titulo = 'Autobuses Zaragoza Cuenta Creada'
+            var mensaje = `
+            <span>Enhorabuena, se ha registrado correctamente en la Web de Autobuses Zaragoza</span>
+            <br>
+            <span>Nombre de Usuario: <span><strong>${UserName}</strong></span></span><br>
+            <span>Correo Electrónico: <span><strong>${Email}</strong></span></span><br>
+            <span>Contraseña: <span><strong>${Password}</strong></span></span>
+            <br>
+            <br>
+            <a href='${sitioEnviroment.DIRECCIONES.SITIO}'>Inicia sesión desde aquí</a>
+            `
+            var mailOptionsRegister = {
+                from: sitioEnviroment.ENVIROMENTMAIL.USEREMAIL,
                 to: Email,
-                subject: 'Autobuses Zaragoza Cuenta Creada',
-                text: mensaje
+                subject: titulo,
+                html: mensaje,
               };
-            mail(mailOptions)
-            console.log(mailOptions)
+            mail(mailOptionsRegister)
+            console.log(mailOptionsRegister)
         }
     }
     )
@@ -68,7 +79,7 @@ exports.CreateUser = (req, res) => {
 exports.UpdatePasswordUser = (req,res) => {
     const idUser = req.params.idUser
     const password = req.body.Password
-    const sql = 'UPDATE Users SET Password = ? WHERE IdUser = ?'
+    const sql = 'UPDATE users SET Password = ? WHERE IdUser = ?'
     connection.query(sql, [password, idUser], (err, result) =>{
         if(err) throw err
         if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
@@ -80,7 +91,7 @@ exports.UpdatePasswordUser = (req,res) => {
 
 exports.DeleteUser = (req,res) =>{
     const {idUser} = req.params
-    const sqlDelete = 'DELETE FROM Users WHERE IdUser = ?'
+    const sqlDelete = 'DELETE FROM users WHERE IdUser = ?'
     
     connection.query(sqlDelete, [idUser], (err,result) =>{
         if(err) throw err
@@ -94,7 +105,7 @@ exports.DeleteUser = (req,res) =>{
 exports.UpdateUser = (req, res) => {
     const idUser = req.params.idUser
     const lastConnection = req.body.LastConnection
-    const sql = 'UPDATE Users SET LastConnection = ? WHERE IdUser = ?'
+    const sql = 'UPDATE users SET LastConnection = ? WHERE IdUser = ?'
     connection.query(sql, [lastConnection, idUser], (err, result) =>{
         if(err) throw err
         if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
@@ -107,7 +118,7 @@ exports.UpdateUser = (req, res) => {
 exports.DeleteUserIsActive = (req,res) =>{
     const idUser = req.params.idUser
     const isActive = req.body.IsActive
-    const sql = 'UPDATE Users SET IsActive = ? WHERE IdUser = ?'
+    const sql = 'UPDATE users SET IsActive = ? WHERE IdUser = ?'
     connection.query(sql, [isActive, idUser], (err, result) =>{
         if(err) throw err
         if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
@@ -115,13 +126,11 @@ exports.DeleteUserIsActive = (req,res) =>{
     })
 }
 
-
 //Iniciar Sesion
-
 exports.Login = (req,res) =>{
 
     const {email,password} = req.body
-    const sql = 'SELECT * FROM Users WHERE (Email = ? OR UserName = ?) AND Password = ? AND isActive = true'
+    const sql = 'SELECT * FROM users WHERE (Email = ? OR UserName = ?) AND Password = ? AND isActive = true'
     connection.query(sql,[email,email,password], (error,results,fields) =>{
         if(error) throw error
         if(results.length > 0){

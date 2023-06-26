@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoute = require('.//routes/userRoutes')
 const linesFavoritesRoute = require('.//routes/linesFavoritesRoutes')
+const incidentsRoute = require('.//routes/incidentsRoutes')
 
 const app = express()
 const cors = require('cors');
@@ -24,7 +25,7 @@ app.use(cors({
 //Middelware, path inicial
 app.use('/api/Users', userRoute);
 app.use('/api/LinesFavorites', linesFavoritesRoute);
-
+app.use('/api/Incidents', incidentsRoute);
 
 const port = process.env.PORT || 3000; // Selecciona el puerto disponible o el 3000 por defecto
 

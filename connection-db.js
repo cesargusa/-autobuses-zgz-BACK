@@ -3,17 +3,23 @@ let DB_NAME = 'Pro'
 let dbNameText = ''
 const PRO = {
     //Cadena de Conexión Producción(Remota)
-    host: 'db4free.net',
-    user: 'nettcesar',
-    password: '32c178d7',
-    database: 'nettautobuszgz'
+    // host: 'db4free.net',
+    // user: 'nettcesar',
+    // password: '32c178d7',
+    // database: 'nettautobuszgz'
+
+    //Cadena de Conexiòn freeSqldatabase
+    host: 'sql8.freesqldatabase.com',
+    user: 'sql8627667',
+    password: 'SzjCHWFWGa',
+    database: 'sql8627667'
 }
 const LOCAL = {
     //Cadena conexión local
-    host: 'localhost',
-    user: 'NettAdmin',
-    password: 'NettAdmin',
-    database: 'nett_bus'
+    host: '127.0.0.1',
+    user: 'nettbusproyecto',
+    password: 'PruebaBot22',
+    database: 'buses'
 }
 
 function GetDataBase(DB_NAME){

@@ -130,17 +130,16 @@ exports.DeleteUserIsActive = (req,res) =>{
 exports.Login = (req,res) =>{
 
     const {email,password} = req.body
-    const sql = 'SELECT * FROM users WHERE (Email = ? OR UserName = ?) AND Password = ? AND isActive = true'
+    const sql = 'SELECT * FROM users WHERE (Email = ? OR UserName = ?) AND Password = ?'
     connection.query(sql,[email,email,password], (error,results,fields) =>{
         if(error) throw error
-        if(results.length > 0){
-        
+        if(results.length > 0 && results[0].IsActive === 1){
             console.log(results)
             const userName = results[0].UserName
             const idUser = results[0].IdUser
-            res.json({succes:true, userName, idUser})
-        }else{
-            res.json({succes:false})
-        }
+            res.json({succes:true, userName, idUser, isActive:results[0].IsActive})
+        }else if(results.length > 0 && results[0].IsActive === 0) res.json({succes:false, isActive: results[0].IsActive })
+        
+        else res.json({succes:false })
     })
 }

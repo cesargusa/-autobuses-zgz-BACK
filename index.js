@@ -20,6 +20,10 @@ app.use(cors({
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.header('Access-Control-Allow-Credentials', true);
+  // req.header('Access-Control-Allow-Origin', '*');
+  // req.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // req.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  // req.header('Access-Control-Allow-Credentials', true);
   next();
 });
 //Middelware, path inicial

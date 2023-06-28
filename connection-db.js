@@ -3,16 +3,16 @@ let DB_NAME = 'Pro'
 let dbNameText = ''
 const PRO = {
     //Cadena de Conexión Producción(Remota)
-    // host: 'db4free.net',
-    // user: 'nettcesar',
-    // password: '32c178d7',
-    // database: 'nettautobuszgz'
+    host: 'db4free.net',
+    user: 'nettcesar',
+    password: '32c178d7',
+    database: 'nettautobuszgz'
 
     //Cadena de Conexiòn freeSqldatabase
-    host: 'sql8.freesqldatabase.com',
-    user: 'sql8627667',
-    password: 'SzjCHWFWGa',
-    database: 'sql8627667'
+    // host: 'sql8.freesqldatabase.com',
+    // user: 'sql8627667',
+    // password: 'SzjCHWFWGa',
+    // database: 'sql8627667'
 }
 const LOCAL = {
     //Cadena conexión local

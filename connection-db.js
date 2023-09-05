@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-let DB_NAME = 'Local'
+let DB_NAME = 'Pro'
 let dbNameText = ''
 const PRO = {
     //Cadena de Conexión Producción(Remota)

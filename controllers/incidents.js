@@ -2,16 +2,25 @@ const connection = require('../connection-db')
 
 
 exports.GetTypeIncidents = (req, res) => {
-const sql = 'SELECT * from typeincidents'
+
+  try {
+    const sql = 'SELECT * from typeincidents'
 
 connection.query(sql,(err,results,fields)=>{
     if(err) throw err
     res.send(results)
 })
+  } catch (error) {
+    res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+
+  }
+
 }
 
 exports.CreateIncident = (req,res) =>{
-    const { IdIncident,IdTypeIncident, IdUser, DescriptionIncident } = req.body;
+
+  try {
+        const { IdIncident,IdTypeIncident, IdUser, DescriptionIncident } = req.body;
 
     const sqlQuery = 'INSERT INTO incidents VALUES (?,?, ?, ?)';
     
@@ -20,6 +29,11 @@ exports.CreateIncident = (req,res) =>{
       console.log(`Nueva incidencia insertada en la tabla: ${result.IdIncident}`);
       res.json({ message: 'Incidencia creada correctamente' });
     });
+  } catch (error) {
+    res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+
+  }
+
 }
 
 

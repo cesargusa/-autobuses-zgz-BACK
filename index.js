@@ -8,7 +8,7 @@ const cors = require('cors');
 
 app.use(express.json());
 app.use(cors({
-    origin: ['https://cesar.proyectosdwa.es', 'http://localhost:4200'],
+    origin: ['https://cesar.proyectosdwa.es', 'http://localhost:4200','http://localhost:3001'],
     methods: ['GET', 'POST','PUT','DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200

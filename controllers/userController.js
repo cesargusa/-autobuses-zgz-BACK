@@ -6,18 +6,28 @@ const sitioEnviroment = require('../enviroments/enviroments.js')
 
 //GET ALL
 exports.GetUsers = (req, res) => {
-    connection.query('SELECT * FROM users', (error, results, fields) => {
+
+    try {
+            connection.query('SELECT * FROM users', (error, results, fields) => {
         if (error) {
             res.send('Ha fallado la consulta :(')
-        } else {
-            res.send(results)
-        }
+        } else res.send(results)
+  
     })
+    } catch (error) {
+        res
+          .status(500)
+          .send(`Ocurrió un error interno en el servidor - ${error}`);
+
+    }
+
 }
 
 //GET BY ID
 exports.GetUserById = (req,res) =>{
-    const idUser = req.params.idUser
+
+    try {
+            const idUser = req.params.idUser
     const sql = 'SELECT * FROM users WHERE IdUser = ?'
     connection.query(sql, [idUser],(err,results,fields) => {
         if(err) {
@@ -31,6 +41,11 @@ exports.GetUserById = (req,res) =>{
        }
        res.send(results[0])
     })
+    } catch (error) {
+        res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+
+    }
+
 }
 
 //CREATE
@@ -67,17 +82,24 @@ exports.CreateUser = (req, res) => {
     }
     )
     function QueryInsert() {
-        connection.query(sql, [idUser, Email, UserName, Password, CreateDate, LastConnection, IsActive], (err, result) => {
+
+        try {
+             connection.query(sql, [idUser, Email, UserName, Password, CreateDate, LastConnection, IsActive], (err, result) => {
             if (err) throw err
             console.log(`Nuevo registro insertado en la tabla: ${result.insertId}`)
             res.json({ message: 'Registro insertado correctamente' });
 
         })
+        } catch (error) {
+            res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+        }
+       
     }
 }
-
 exports.UpdatePasswordUser = (req,res) => {
-    const idUser = req.params.idUser
+
+    try {
+           const idUser = req.params.idUser
     const password = req.body.Password
     const sql = 'UPDATE users SET Password = ? WHERE IdUser = ?'
     connection.query(sql, [password, idUser], (err, result) =>{
@@ -85,61 +107,88 @@ exports.UpdatePasswordUser = (req,res) => {
         if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
         else res.json({message:`Contraseña de Usuario ${idUser} actualizada correctamente`})
     })
+    } catch (error) {
+        res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+
+    }
+ 
 }
 
 //DELETE
 
 exports.DeleteUser = (req,res) =>{
-    const {idUser} = req.params
-    const sqlDelete = 'DELETE FROM users WHERE IdUser = ?'
-    
-    connection.query(sqlDelete, [idUser], (err,result) =>{
-        if(err) throw err
-        if(result.affectedRows === 0) res.status(404).send('No se encontró el usuario especificado');
-        else res.send(`Usuario con id: ${idUser} eliminado correctamente`)
-    })
+  try {
+    const { idUser } = req.params;
+    const sqlDelete = "DELETE FROM users WHERE IdUser = ?";
+
+    connection.query(sqlDelete, [idUser], (err, result) => {
+      if (err) throw err;
+      if (result.affectedRows === 0)
+        res.status(404).send("No se encontró el usuario especificado");
+      else res.send(`Usuario con id: ${idUser} eliminado correctamente`);
+    });
+  } catch (error) {
+    res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
+  }
 }
 
 //UPDATE CONNECTION
 
 exports.UpdateUser = (req, res) => {
-    const idUser = req.params.idUser
-    const lastConnection = req.body.LastConnection
-    const sql = 'UPDATE users SET LastConnection = ? WHERE IdUser = ?'
-    connection.query(sql, [lastConnection, idUser], (err, result) =>{
-        if(err) throw err
-        if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
-        else res.json({message:`Usuario ${idUser} actualziado correctamente`})
-    })
+
+    try {
+        const idUser = req.params.idUser
+        const lastConnection = req.body.LastConnection
+        const sql = 'UPDATE users SET LastConnection = ? WHERE IdUser = ?'
+        connection.query(sql, [lastConnection, idUser], (err, result) =>{
+            if(err) throw err
+            if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
+            else res.json({message:`Usuario ${idUser} actualziado correctamente`})
+        })
+    } catch (error) {
+        res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`)
+    }
+
 }
 
 //DELETE USER IsActive
 
 exports.DeleteUserIsActive = (req,res) =>{
-    const idUser = req.params.idUser
-    const isActive = req.body.IsActive
-    const sql = 'UPDATE users SET IsActive = ? WHERE IdUser = ?'
-    connection.query(sql, [isActive, idUser], (err, result) =>{
-        if(err) throw err
-        if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
-        else res.json({message:`Usuario ${idUser} ha sido eliminado correctamente`})
-    })
+
+    try {
+        const idUser = req.params.idUser
+        const isActive = req.body.IsActive
+        const sql = 'UPDATE users SET IsActive = ? WHERE IdUser = ?'
+        connection.query(sql, [isActive, idUser], (err, result) =>{
+            if(err) throw err
+            if(result.affectedRows === 0) res.status(404).send('No se encontro al usuario')
+            else res.json({message:`Usuario ${idUser} ha sido eliminado correctamente`})
+        })
+    } catch (error) {
+        res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`)
+        }
+
 }
 
 //Iniciar Sesion
 exports.Login = (req,res) =>{
 
-    const {email,password} = req.body
-    const sql = 'SELECT * FROM users WHERE (Email = ? OR UserName = ?) AND Password = ?'
-    connection.query(sql,[email,email,password], (error,results,fields) =>{
-        if(error) throw error
-        if(results.length > 0 && results[0].IsActive === 1){
-            console.log(results)
-            const userName = results[0].UserName
-            const idUser = results[0].IdUser
-            res.json({succes:true, userName, idUser, isActive:results[0].IsActive})
-        }else if(results.length > 0 && results[0].IsActive === 0) res.json({succes:false, isActive: results[0].IsActive })
-        
-        else res.json({succes:false })
-    })
+    try{
+        const {email,password} = req.body
+        const sql = 'SELECT * FROM users WHERE (Email = ? OR UserName = ?) AND Password = ?'
+        connection.query(sql,[email,email,password], (error,results,fields) =>{
+            if(error) throw error
+            if(results.length > 0 && results[0].IsActive === 1){
+                console.log(results)
+                const userName = results[0].UserName
+                const idUser = results[0].IdUser
+                res.json({succes:true, userName, idUser, isActive:results[0].IsActive})
+            }else if(results.length > 0 && results[0].IsActive === 0) res.json({succes:false, isActive: results[0].IsActive })
+            else res.json({succes:false })
+        })
+    }
+    catch(error){
+        res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`)
+    }
+   
 }

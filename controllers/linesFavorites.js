@@ -11,12 +11,14 @@ exports.GetLinesFavorites = (req, res) => {
     "WHERE userslines.IdUser = ? ";
 
   connection.query(sql, [idUser], (err, results, fields) => {
-    if (err) throw err;
-    res.send(results);
+    if (err) {
+      console.error('Error en la consulta a la base de datos:', err);
+      res.status(500).send(`Ocurrió un error interno en el servidor - ${err.message}`);
+    }
+     else res.send(results);
   });
   } catch (error) {
     res.status(500).send(`Ocurrió un error interno en el servidor - ${error}`);
-
   }
  
 };
